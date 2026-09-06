@@ -246,6 +246,7 @@ function AuthPage({ onAuthenticated }) {
               <input
                 id="signup-name"
                 name="name"
+                autoComplete="name"
                 required
                 value={form.name}
                 onChange={(event) =>
@@ -260,6 +261,7 @@ function AuthPage({ onAuthenticated }) {
             <input
               id="auth-email"
               name="email"
+              autoComplete="email"
               required
               type="email"
               value={form.email}
@@ -274,6 +276,7 @@ function AuthPage({ onAuthenticated }) {
             <input
               id="auth-password"
               name="password"
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
               required
               minLength={8}
               type="password"
@@ -413,6 +416,7 @@ function ProfilePage({ user, onUserUpdated, onBack }) {
             <input
               id="profile-name"
               name="name"
+              autoComplete="name"
               required
               value={form.name}
               onChange={(event) =>
@@ -425,6 +429,7 @@ function ProfilePage({ user, onUserUpdated, onBack }) {
             <input
               id="profile-email"
               name="email"
+              autoComplete="email"
               required
               type="email"
               value={form.email}
@@ -438,6 +443,7 @@ function ProfilePage({ user, onUserUpdated, onBack }) {
             <input
               id="profile-job-role"
               name="jobRole"
+              autoComplete="organization-title"
               value={form.jobRole}
               onChange={(event) =>
                 setForm({ ...form, jobRole: event.target.value })
@@ -836,6 +842,7 @@ function App() {
                   <input
                     id="file-search"
                     name="query"
+                    autoComplete="off"
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="Search files"
