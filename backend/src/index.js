@@ -41,6 +41,23 @@ app.use(
 );
 app.use(express.json());
 
+let databaseConnection;
+const connectDatabase = () => {
+  databaseConnection ??= mongoose.connect(
+    process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/dropvault",
+  );
+  return databaseConnection;
+};
+
+app.use(async (_request, _response, next) => {
+  try {
+    await connectDatabase();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.get("/", (_request, response) => {
   response.json({ status: "ok", service: "Tomorrow is Better API" });
 });
@@ -273,14 +290,17 @@ app.use((error, _request, response, _next) => {
   response.status(500).json({ message: "Something went wrong on the server." });
 });
 
-mongoose
-  .connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/dropvault")
-  .then(() => {
-    app.listen(port, () =>
-      console.log(`DropVault API running on http://localhost:${port}`),
-    );
-  })
-  .catch((error) => {
-    console.error("MongoDB connection failed:", error.message);
-    process.exit(1);
-  });
+export default app;
+
+if (!process.env.VERCEL) {
+  connectDatabase()
+    .then(() => {
+      app.listen(port, () =>
+        console.log(`DropVault API running on http://localhost:${port}`),
+      );
+    })
+    .catch((error) => {
+      console.error("MongoDB connection failed:", error.message);
+      process.exit(1);
+    });
+}
