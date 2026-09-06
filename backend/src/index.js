@@ -23,16 +23,19 @@ fs.mkdirSync(uploadDirectory, { recursive: true });
 
 const app = express();
 const port = process.env.PORT || 5000;
-const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim().replace(/\/$/, ""))
+  .filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, callback) => {
       const isLocalClient = /^http:\/\/localhost:\d+$/.test(origin || "");
-      if (!origin || origin === clientUrl || isLocalClient) {
+      if (!origin || allowedOrigins.includes(origin) || isLocalClient) {
         return callback(null, true);
       }
-      callback(new Error("Origin is not allowed by CORS."));
+      callback(null, false);
     },
   }),
 );

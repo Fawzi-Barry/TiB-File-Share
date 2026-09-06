@@ -244,6 +244,8 @@ function AuthPage({ onAuthenticated }) {
             <label>
               Full name
               <input
+                id="signup-name"
+                name="name"
                 required
                 value={form.name}
                 onChange={(event) =>
@@ -256,6 +258,8 @@ function AuthPage({ onAuthenticated }) {
           <label>
             Email address
             <input
+              id="auth-email"
+              name="email"
               required
               type="email"
               value={form.email}
@@ -268,6 +272,8 @@ function AuthPage({ onAuthenticated }) {
           <label>
             Password
             <input
+              id="auth-password"
+              name="password"
               required
               minLength={8}
               type="password"
@@ -405,6 +411,8 @@ function ProfilePage({ user, onUserUpdated, onBack }) {
           <label>
             Full name
             <input
+              id="profile-name"
+              name="name"
               required
               value={form.name}
               onChange={(event) =>
@@ -415,6 +423,8 @@ function ProfilePage({ user, onUserUpdated, onBack }) {
           <label>
             Email address
             <input
+              id="profile-email"
+              name="email"
               required
               type="email"
               value={form.email}
@@ -426,6 +436,8 @@ function ProfilePage({ user, onUserUpdated, onBack }) {
           <label>
             Job role
             <input
+              id="profile-job-role"
+              name="jobRole"
               value={form.jobRole}
               onChange={(event) =>
                 setForm({ ...form, jobRole: event.target.value })
@@ -501,6 +513,8 @@ function ProfilePage({ user, onUserUpdated, onBack }) {
                   {item.jobRole || "No job role set"}
                 </span>
                 <select
+                  id={`role-${item.id}`}
+                  name={`role-${item.id}`}
                   value={item.role}
                   onChange={(event) => changeRole(item.id, event.target.value)}
                   disabled={item.id === user.id}
@@ -798,6 +812,8 @@ function App() {
                 {isUploading ? "Working" : "Choose file"}
               </button>
               <input
+                id="file-upload"
+                name="file"
                 ref={inputRef}
                 type="file"
                 hidden
@@ -818,6 +834,8 @@ function App() {
                 <label className="search-box">
                   <Search size={17} />
                   <input
+                    id="file-search"
+                    name="query"
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="Search files"
