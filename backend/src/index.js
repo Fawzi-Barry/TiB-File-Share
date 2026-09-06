@@ -38,6 +38,10 @@ app.use(
 );
 app.use(express.json());
 
+app.get("/", (_request, response) => {
+  response.json({ status: "ok", service: "Tomorrow is Better API" });
+});
+
 app.post("/api/auth/signup", async (request, response, next) => {
   try {
     const { name, email, password } = request.body;

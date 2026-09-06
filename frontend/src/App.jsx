@@ -26,7 +26,9 @@ import {
   X,
 } from "lucide-react";
 
-const API_URL = `${window.location.protocol}//${window.location.hostname}:5000/api`;
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  `${window.location.protocol}//${window.location.hostname}:5000/api`;
 const BRAND_LOGO =
   "https://www.tomorrowisbetter.org/assets/Tomorrow%20is%20better%20logo-CBq5aH4y.jpg";
 

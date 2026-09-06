@@ -38,7 +38,7 @@ npm run install-all
 Create the server environment file:
 
 ```bash
-copy server\.env.example server\.env
+copy backend\.env.example backend\.env
 ```
 
 Update `server/.env` with your local configuration, then start the client and API together:
@@ -51,7 +51,7 @@ Open the client at [http://localhost:5173](http://localhost:5173).
 
 ## Environment Variables
 
-Create `server/.env`:
+Create `backend/.env`:
 
 ```env
 PORT=5000
@@ -66,23 +66,41 @@ Use a long, private value for `JWT_SECRET` outside local development.
 
 Run these commands from the repository root:
 
-| Command | Description |
-| --- | --- |
+| Command               | Description                                   |
+| --------------------- | --------------------------------------------- |
 | `npm run install-all` | Install root, server, and client dependencies |
-| `npm run dev` | Start the API and Vite client together |
-| `npm run server` | Start only the API with nodemon |
-| `npm run client` | Start only the Vite client |
+| `npm run dev`         | Start the API and Vite client together        |
+| `npm run server`      | Start only the API with nodemon               |
+| `npm run client`      | Start only the Vite client                    |
 
-Run these commands from `client/`:
+Run these commands from `frontend/`:
 
-| Command | Description |
-| --- | --- |
-| `npm run build` | Create a production client build |
+| Command           | Description                         |
+| ----------------- | ----------------------------------- |
+| `npm run build`   | Create a production client build    |
 | `npm run preview` | Preview the production client build |
 
 ## File Storage
 
-Uploaded files are stored on disk in `server/uploads`. File metadata, users, roles, share tokens, and download counts are stored in MongoDB.
+Uploaded files are stored on disk in `backend/uploads`. File metadata, users, roles, share tokens, and download counts are stored in MongoDB.
+
+## Deploying to Vercel
+
+The Vite frontend is configured for Vercel. From the repository root, import the repository into Vercel; `vercel.json` supplies the build command and SPA fallback. Add this Vercel environment variable:
+
+```env
+VITE_API_URL=https://your-public-api-url.example.com/api
+```
+
+The Express API should be deployed as a separate Node service because uploaded files are written to `backend/uploads`, and Vercel function filesystems are ephemeral. Set these variables on that service:
+
+```env
+MONGODB_URI=your-mongodb-atlas-connection-string
+CLIENT_URL=https://your-frontend.vercel.app
+JWT_SECRET=use-a-long-random-secret
+```
+
+Deploy the `backend` directory with `npm start`, then put its public URL (ending in `/api`) into Vercel as `VITE_API_URL`. Configure MongoDB Atlas network access for the API host before testing sign-up and uploads.
 
 The application does not expose another user's private library. Public share links expose only the specific file associated with the token.
 
@@ -98,31 +116,31 @@ New accounts are regular users by default. Administrators can manage access role
 ```js
 db.users.updateOne(
   { email: "your-email@example.com" },
-  { $set: { role: "admin" } }
-)
+  { $set: { role: "admin" } },
+);
 ```
 
 ## API Overview
 
-| Method | Endpoint | Authentication |
-| --- | --- | --- |
-| `POST` | `/api/auth/signup` | Public |
-| `POST` | `/api/auth/login` | Public |
-| `GET` | `/api/auth/me` | Required |
-| `PATCH` | `/api/auth/profile` | Required |
-| `GET` | `/api/files` | Required |
-| `POST` | `/api/files` | Required |
-| `GET` | `/api/files/:id/download` | Public file URL |
-| `GET` | `/api/share/:token` | Public |
-| `GET` | `/api/users` | Admin |
-| `PATCH` | `/api/users/:id/role` | Admin |
+| Method  | Endpoint                  | Authentication  |
+| ------- | ------------------------- | --------------- |
+| `POST`  | `/api/auth/signup`        | Public          |
+| `POST`  | `/api/auth/login`         | Public          |
+| `GET`   | `/api/auth/me`            | Required        |
+| `PATCH` | `/api/auth/profile`       | Required        |
+| `GET`   | `/api/files`              | Required        |
+| `POST`  | `/api/files`              | Required        |
+| `GET`   | `/api/files/:id/download` | Public file URL |
+| `GET`   | `/api/share/:token`       | Public          |
+| `GET`   | `/api/users`              | Admin           |
+| `PATCH` | `/api/users/:id/role`     | Admin           |
 
 ## Project Structure
 
 ```text
-client/          React and Vite frontend
-server/          Express API, MongoDB models, and uploads
-server/uploads/  Uploaded file storage
+frontend/          React and Vite frontend
+backend/           Express API, MongoDB models, and uploads
+backend/uploads/   Uploaded file storage
 ```
 
 ## License
