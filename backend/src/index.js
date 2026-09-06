@@ -41,6 +41,13 @@ app.use(
 );
 app.use(express.json());
 
+app.use((request, _response, next) => {
+  if (request.url !== "/" && !request.url.startsWith("/api")) {
+    request.url = `/api${request.url}`;
+  }
+  next();
+});
+
 let databaseConnection;
 const connectDatabase = () => {
   databaseConnection ??= mongoose.connect(
